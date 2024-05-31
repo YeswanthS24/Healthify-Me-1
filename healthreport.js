@@ -1,3 +1,7 @@
+document.addEventListener('DOMContentLoaded', function () {
+    // Initialize any necessary data or event listeners.
+});
+
 const recipes = [
     {
         condition: "Diabetes",
@@ -137,18 +141,20 @@ function addAdditionalRecipes(condition) {
     }
 }
 
-function checkAccess() {
-    const password = document.getElementById('nursePassword').value;
-    const validPassword = 'nurse123'; // This should be securely managed in a real application
-
-    if (password === validPassword) {
-        document.getElementById('loginContainer').style.display = 'none';
-        document.getElementById('reportContainer').style.display = 'block';
-    } else {
-        alert('Access denied');
-    }
+function showNurseLogin() {
+    document.getElementById('nurseLogin').style.display = 'block';
+    document.getElementById('userLogin').style.display = 'none';
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Initialize any necessary data or event listeners.
-});
+function checkAccess() {
+    const username = document.getElementById('nurseUsername').value;
+    const password = document.getElementById('nursePassword').value; // This should be securely managed in a real application
+
+    if (username === 'nurse1' && password === 'password123') {
+        
+        // Redirect to health report page
+        window.location.href = 'report.html';
+    } else {
+        alert('Invalid nurse credentials');
+    }
+}

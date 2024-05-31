@@ -5,30 +5,29 @@ function addRecipe() {
     const ingredients = document.getElementById('recipeIngredients').value;
     const instructions = document.getElementById('recipeInstructions').value;
     const imageInput = document.getElementById('recipeImage');
-    let imageUrl = '';
 
-    if (imageInput.files && imageInput.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            imageUrl = e.target.result;
-            saveRecipe(name, ingredients, instructions, imageUrl);
-        };
-        reader.readAsDataURL(imageInput.files[0]);
+    if (name && ingredients && instructions) {
+        if (imageInput.files && imageInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const imageUrl = e.target.result;
+                saveRecipe(name, ingredients, instructions, imageUrl);
+            };
+            reader.readAsDataURL(imageInput.files[0]);
+        } else {
+            saveRecipe(name, ingredients, instructions, '');
+        }
     } else {
-        saveRecipe(name, ingredients, instructions, '');
+        alert('Please fill out all fields');
     }
 }
 
 function saveRecipe(name, ingredients, instructions, imageUrl) {
-    if (name && ingredients && instructions) {
-        const newRecipe = { name, ingredients, instructions, imageUrl, reviews: [], ratings: [] };
-        recipes.push(newRecipe);
-        localStorage.setItem('recipes', JSON.stringify(recipes));
-        displayRecipes();
-        clearForm();
-    } else {
-        alert('Please fill out all fields');
-    }
+    const newRecipe = { name, ingredients, instructions, imageUrl };
+    recipes.push(newRecipe);
+    localStorage.setItem('recipes', JSON.stringify(recipes));
+    displayRecipes();
+    clearForm();
 }
 
 function displayRecipes(filteredRecipes = recipes) {
@@ -42,7 +41,6 @@ function displayRecipes(filteredRecipes = recipes) {
         recipeItem.innerHTML = `
             <h2>${recipe.name}</h2>
             <img src="${recipe.imageUrl}" alt="${recipe.name}">
-            <p><strong>Average Rating:</strong> ${calculateAverageRating(recipe)}</p>
             <button class="delete-button" onclick="deleteRecipe(${index})">Delete</button>
         `;
 
@@ -50,11 +48,6 @@ function displayRecipes(filteredRecipes = recipes) {
 
         recipeContainer.appendChild(recipeItem);
     });
-}
-
-function calculateAverageRating(recipe) {
-    const averageRating = recipe.ratings.length ? (recipe.ratings.reduce((a, b) => a + b) / recipe.ratings.length).toFixed(1) : 'No ratings';
-    return averageRating;
 }
 
 function toggleRecipeDetails(recipeItem, index) {
@@ -67,18 +60,6 @@ function toggleRecipeDetails(recipeItem, index) {
         recipeDetails.innerHTML = `
             <p><strong>Ingredients:</strong> ${recipe.ingredients}</p>
             <p><strong>Instructions:</strong> ${recipe.instructions}</p>
-            <div class="review">
-                <h3>Reviews</h3>
-                ${recipe.reviews.length > 0 ? recipe.reviews.map(review => `<p>${review}</p>`).join('') : '<p>No reviews yet.</p>'}
-                <textarea id="review-${index}" placeholder="Add a review"></textarea>
-                <button onclick="addReview(${index})">Submit Review</button>
-                <div class="rating">
-                    ${[5, 4, 3, 2, 1].map(star => `
-                        <input type="radio" id="star${star}-${index}" name="rating-${index}" value="${star}">
-                        <label for="star${star}-${index}">&#9733;</label>
-                    `).join('')}
-                </div>
-            </div>
         `;
         recipeItem.appendChild(recipeDetails);
     } else {
@@ -94,34 +75,11 @@ function clearForm() {
     document.getElementById('recipeImage').value = '';
 }
 
-function addReview(index) {
-    const reviewText = document.getElementById(`review-${index}`).value;
-    const rating = document.querySelector(`input[name="rating-${index}"]:checked`);
-    if (reviewText) {
-        recipes[index].reviews.push(reviewText);
-    }
-    if (rating) {
-        recipes[index].ratings.push(Number(rating.value));
-    }
-    localStorage.setItem('recipes', JSON.stringify(recipes));
-    displayRecipes();
-}
-
 function deleteRecipe(index) {
     recipes.splice(index, 1);
     localStorage.setItem('recipes', JSON.stringify(recipes));
     displayRecipes();
 }
-
-document.getElementById('search').addEventListener('input', function (e) {
-    const query = e.target.value.toLowerCase();
-    const filteredRecipes = recipes.filter(recipe =>
-        recipe.name.toLowerCase().includes(query) ||
-        recipe.ingredients.toLowerCase().includes(query) ||
-        recipe.instructions.toLowerCase().includes(query)
-    );
-    displayRecipes(filteredRecipes);
-});
 
 document.addEventListener('DOMContentLoaded', function () {
     displayRecipes();

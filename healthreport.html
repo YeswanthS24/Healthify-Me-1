@@ -28,12 +28,25 @@
             </ul>
         </div>
     </div>
-
-    <div id="loginContainer" class="container">
-        <h1>Nurse Login</h1>
-        <input type="password" id="nursePassword" placeholder="Enter password">
-        <button onclick="checkAccess()">Login</button>
-    </div>
+     <div class="container" style="height: 250px;width: 300px;padding: 20px; background-color: rgb(131, 60, 197);">
+        <div id="nurseLogin" class="login-form">
+            <br>
+            <br>
+            <h2 style="text-align: center; color: white;">Nurse Login</h2>
+            <br>
+            <center>
+                <input type="text" id="nurseUsername" placeholder="Nurse Username">
+                <br>
+                <br>
+                <input type="password" id="nursePassword" placeholder="Password">
+                 <br>
+                 <br>
+                 <button onclick="checkAccess()">Login</button>
+            </center>
+            
+        </div>
+     </div>
+    
     
     <div id="reportContainer" class="container" style="display: none;">
         <h1>Patient Health Report</h1>
